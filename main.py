@@ -48,9 +48,9 @@ class YouTubeSearcher(ttk.Frame):
         self.parent = parent
         self.favorites = load_json(FAV_FILE)
         self.recent_played = load_json(RECENT_FILE)
-        self.thumb_cache = {}  # cache thumbnails to prevent GC
-        self.current_process = None  # Track the current mpv process
-        self.is_paused = False  # Track if the video is paused
+        self.thumb_cache = {}  
+        self.current_process = None  
+        self.is_paused = False  
 
         self.subtitles_enabled = tk.BooleanVar(value=True)
         self.audio_only = tk.BooleanVar(value=False)
@@ -59,50 +59,32 @@ class YouTubeSearcher(ttk.Frame):
         self.show_home()
 
     def create_widgets(self):
-        # Main layout: sidebar + content
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
-
-        # Sidebar (settings)
         sidebar = ttk.LabelFrame(self, text="⚙️ Settings", padding=10)
         sidebar.grid(row=0, column=0, sticky="ns", padx=(10, 5), pady=10)
-
         ttk.Checkbutton(sidebar, text="📄 Enable Subtitles", variable=self.subtitles_enabled).pack(anchor='w', pady=5)
         ttk.Checkbutton(sidebar, text="🎵 Audio Only", variable=self.audio_only).pack(anchor='w', pady=5)
-
-        # Main container (rest of the app)
         main = ttk.Frame(self)
         main.grid(row=0, column=1, sticky="nsew", padx=(5, 10), pady=10)
-
-        # Search bar
         search_frame = ttk.Frame(main)
         search_frame.pack(fill=tk.X)
-
         self.search_var = tk.StringVar()
         self.search_entry = ttk.Entry(search_frame, textvariable=self.search_var)
         self.search_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
         self.search_entry.bind("<Return>", lambda e: self.do_search())
-
         self.search_btn = ttk.Button(search_frame, text="🔍 Search", command=self.do_search)
         self.search_btn.pack(side=tk.LEFT, padx=5)
-
-        # Back button
         self.back_btn = ttk.Button(main, text="⬅ Back to Home", command=self.show_home)
         self.back_btn.pack(pady=(10, 5))
         self.back_btn.pack_forget()
-
-        # Home container
         self.home_container = ttk.Frame(main)
         self.home_container.pack(fill=tk.BOTH, expand=True)
-
-        # Recently Played
         self.recent_group = ttk.LabelFrame(self.home_container, text="🎵 Recently Played")
         self.recent_group.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-
         self.recent_canvas = tk.Canvas(self.recent_group, height=200)
         self.recent_scrollbar = ttk.Scrollbar(self.recent_group, orient=tk.VERTICAL, command=self.recent_canvas.yview)
         self.recent_scrollable_frame = ttk.Frame(self.recent_canvas)
-
         self.recent_scrollable_frame.bind(
             "<Configure>",
             lambda e: self.recent_canvas.configure(scrollregion=self.recent_canvas.bbox("all"))
@@ -111,15 +93,11 @@ class YouTubeSearcher(ttk.Frame):
         self.recent_canvas.configure(yscrollcommand=self.recent_scrollbar.set)
         self.recent_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.recent_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        # Favorites
         self.fav_group = ttk.LabelFrame(self.home_container, text="⭐ Favorites")
         self.fav_group.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-
         self.fav_canvas = tk.Canvas(self.fav_group, height=200)
         self.fav_scrollbar = ttk.Scrollbar(self.fav_group, orient=tk.VERTICAL, command=self.fav_canvas.yview)
         self.fav_scrollable_frame = ttk.Frame(self.fav_canvas)
-
         self.fav_scrollable_frame.bind(
             "<Configure>",
             lambda e: self.fav_canvas.configure(scrollregion=self.fav_canvas.bbox("all"))
@@ -128,40 +106,29 @@ class YouTubeSearcher(ttk.Frame):
         self.fav_canvas.configure(yscrollcommand=self.fav_scrollbar.set)
         self.fav_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.fav_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        # Search results
         self.results_frame = ttk.Frame(main)
         self.results_canvas = tk.Canvas(self.results_frame)
         self.results_scrollbar = ttk.Scrollbar(self.results_frame, orient=tk.VERTICAL, command=self.results_canvas.yview)
         self.results_scrollable_frame = ttk.Frame(self.results_canvas)
-
         self.results_scrollable_frame.bind(
             "<Configure>",
             lambda e: self.results_canvas.configure(scrollregion=self.results_canvas.bbox("all"))
         )
         self.results_canvas.create_window((0, 0), window=self.results_scrollable_frame, anchor="nw")
         self.results_canvas.configure(yscrollcommand=self.results_scrollbar.set)
-
         self.results_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.results_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.results_frame.pack_forget()
-
-        # Bottom bar for now playing
-        self.bottom_bar = ttk.Frame(self, height=50)  # Increased height
+        self.bottom_bar = ttk.Frame(self, height=50)  
         self.bottom_bar.grid(row=1, column=0, columnspan=2, sticky="ew", padx=10, pady=10)
-
         self.thumbnail_label = ttk.Label(self.bottom_bar)
         self.thumbnail_label.pack(side=tk.LEFT, padx=5)
-
         self.video_title_label = ttk.Label(self.bottom_bar, text="", font=("Segoe UI", 12))
         self.video_title_label.pack(side=tk.LEFT, padx=5)
-
         self.author_label = ttk.Label(self.bottom_bar, text="", font=("Segoe UI", 10), foreground="gray")
         self.author_label.pack(side=tk.LEFT, padx=5)
-
         self.play_pause_btn = ttk.Button(self.bottom_bar, text="▶️ Play", command=self.toggle_play_pause)
         self.play_pause_btn.pack(side=tk.RIGHT, padx=5)
-
         self.stop_btn = ttk.Button(self.bottom_bar, text="⏹️ Stop", command=self.stop_video)
         self.stop_btn.pack(side=tk.RIGHT, padx=5)
 
@@ -290,7 +257,7 @@ class YouTubeSearcher(ttk.Frame):
 
     def play_video(self, video):
         if self.current_process:
-            self.current_process.terminate()  # Terminate the existing process
+            self.current_process.terminate() 
         self.add_to_recent(video)
         url = video['url']
         cmd = ["mpv"]
@@ -307,8 +274,8 @@ class YouTubeSearcher(ttk.Frame):
             self.current_process = subprocess.Popen(cmd)
             self.is_paused = False
             self.update_now_playing(video)
-            self.play_pause_btn.config(text="⏸️ Pause")  # Change button to pause
-            self.update_bottom_bar(video)  # Update the bottom bar with video info
+            self.play_pause_btn.config(text="⏸️ Pause")  
+            self.update_bottom_bar(video)  
         except Exception as e:
             messagebox.showerror("Error", f"Cannot play video:\n{e}")
 
@@ -324,11 +291,11 @@ class YouTubeSearcher(ttk.Frame):
                 img = Image.open(BytesIO(resp.content)).resize((50, 40))
                 photo = ImageTk.PhotoImage(img)
                 self.thumbnail_label.config(image=photo)
-                self.thumbnail_label.image = photo  # Keep a reference to avoid garbage collection
+                self.thumbnail_label.image = photo  
             except:
                 self.thumbnail_label.config(text="[No Image]")
 
-        self.bottom_bar.grid()  # Show the bottom bar when a video is playing
+        self.bottom_bar.grid()  
 
     def update_bottom_bar(self, video):
         self.video_title_label.config(text=video['title'])
@@ -342,30 +309,30 @@ class YouTubeSearcher(ttk.Frame):
                 img = Image.open(BytesIO(resp.content)).resize((50, 40))
                 photo = ImageTk.PhotoImage(img)
                 self.thumbnail_label.config(image=photo)
-                self.thumbnail_label.image = photo  # Keep a reference to avoid garbage collection
+                self.thumbnail_label.image = photo  
             except:
                 self.thumbnail_label.config(text="[No Image]")
 
     def toggle_play_pause(self):
         if self.current_process:
             if self.is_paused:
-                self.current_process.send_signal(subprocess.signal.SIGCONT)  # Resume the process
-                self.play_pause_btn.config(text="⏸️ Pause")  # Change button to pause
+                self.current_process.send_signal(subprocess.signal.SIGCONT)  
+                self.play_pause_btn.config(text="⏸️ Pause")  
             else:
-                self.current_process.send_signal(subprocess.signal.SIGSTOP)  # Pause the process
-                self.play_pause_btn.config(text="▶️ Play")  # Change button to play
-            self.is_paused = not self.is_paused  # Toggle the paused state
+                self.current_process.send_signal(subprocess.signal.SIGSTOP)  
+                self.play_pause_btn.config(text="▶️ Play")  
+            self.is_paused = not self.is_paused  
 
     def stop_video(self):
         if self.current_process:
-            self.current_process.terminate()  # Terminate the current process
+            self.current_process.terminate()  
             self.current_process = None
             self.is_paused = False
             self.video_title_label.config(text="")
             self.author_label.config(text="")
             self.thumbnail_label.config(image="")
-            self.play_pause_btn.config(text="▶️ Play")  # Reset button to play
-            self.bottom_bar.grid_remove()  # Hide the bottom bar when no video is playing
+            self.play_pause_btn.config(text="▶️ Play")  
+            self.bottom_bar.grid_remove()  
 
 def main():
     root = tb.Window(themename="darkly")
