@@ -8,6 +8,8 @@ It allows you to search for videos and play them in fullscreen or audio-only mod
 You can also add videos to your favorites and view your recently played ones.
 
 ## How to Use
+[![⚠️ Warning: Install MPV](https://img.shields.io/badge/%E2%9A%A0%EF%B8%8F-Warning%3A%20Install%20MPV-yellow?style=for-the-badge)](https://mpv.io/installation/)
+
 
 ### 🐧 Linux
 1. Download the Linux executable `youtube-player` from the [Releases](https://github.com/jonasvanleeuwen19/youtube-player/releases) page  
