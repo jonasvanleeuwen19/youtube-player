@@ -17,3 +17,7 @@ You can also add videos to your favorites and view your recently played ones.
 ### 🪟 Windows
 
 Not available yet — currently in development!
+
+<hr>
+
+![image](https://github.com/user-attachments/assets/80eb240d-681c-4ce5-8cbd-becf4f45c027)
