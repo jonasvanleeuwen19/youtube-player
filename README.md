@@ -10,7 +10,7 @@ You can also add videos to your favorites and view your recently played ones.
 ## How to Use
 
 ### 🐧 Linux
-1. Download the Linux executable `youtube-player` from the [Releases](#) page  
+1. Download the Linux executable `youtube-player` from the [Releases](https://github.com/jonasvanleeuwen19/youtube-player/releases) page  
 2. Make it executable by running:  ```chmod +x ./youtube-player```
 3. Launch the player: ```./youtube-player```
 
