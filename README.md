@@ -19,9 +19,6 @@ You can also add videos to your favorites and view your recently played ones.
 2. Make it executable by running:  ```chmod +x ./youtube-player```
 3. Launch the player: ```./youtube-player```
 
-### 🪟 Windows
-It's working with windows perfectly fine, i just don't have a windows device where i can build it to an .exe file
-
 <hr>
 
 ![image](https://github.com/user-attachments/assets/80eb240d-681c-4ce5-8cbd-becf4f45c027)
