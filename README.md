@@ -1,3 +1,6 @@
+<img width="1920" height="400" alt="Python YouTube Player banner" src="https://github.com/user-attachments/assets/220a6f12-f6b2-4e36-b9ed-bfe80a05b446" />
+
+
 # 🎬️ YouTube Player
 ![License](https://img.shields.io/badge/license-GNU%20General%20Public%20License%20v3-blue.svg) 
 
