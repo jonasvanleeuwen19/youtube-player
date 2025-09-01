@@ -20,8 +20,7 @@ You can also add videos to your favorites and view your recently played ones.
 3. Launch the player: ```./youtube-player```
 
 ### 🪟 Windows
-
-Not available yet — currently in development!
+It's working with windows perfectly fine, i just don't have a windows device where i can build it to an .exe file
 
 <hr>
 
