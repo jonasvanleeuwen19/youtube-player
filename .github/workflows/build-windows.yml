@@ -1,19 +1,19 @@
-name: Build Windows EXE
+name: Build Windows EXE and push to new branch
 
 on:
   push:
     branches: [ main ]
-  pull_request:
+  workflow_dispatch:  # hiermee kun je de workflow handmatig starten
 
 jobs:
   build-windows:
     runs-on: windows-latest
 
     steps:
-    - name: Check out repo
+    - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
@@ -26,9 +26,24 @@ jobs:
     - name: Build EXE
       run: |
         pyinstaller --onefile your_script.py
+        # je exe komt in dist/your_script.exe
+
+    - name: Setup Git
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@users.noreply.github.com"
+
+    - name: Commit EXE to new branch
+      run: |
+        git checkout -b windows-build
+        mkdir -p exe
+        mv dist/your_script.exe exe/
+        git add exe/your_script.exe
+        git commit -m "Add Windows EXE build"
+        git push --set-upstream origin windows-build
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: my-windows-exe
-        path: dist/your_script.exe
+        name: windows-exe
+        path: exe/your_script.exe
