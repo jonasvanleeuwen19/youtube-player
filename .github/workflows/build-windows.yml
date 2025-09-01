@@ -26,7 +26,7 @@ jobs:
 
     - name: Build EXE
       run: |
-        pyinstaller --onefile main.py
+        pyinstaller --onefile --windowed --hidden-import=youtube_search main.py
         # Als je een icoon wilt, kan je hier toevoegen:
         # pyinstaller --onefile --icon=icon.ico main.py
 
