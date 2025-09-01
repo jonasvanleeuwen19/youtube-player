@@ -36,8 +36,8 @@ jobs:
       run: |
         git checkout -b windows-build
         mkdir -p exe
-        mv dist/your_script.exe exe/
-        git add exe/your_script.exe
+        mv dist/main.exe exe/
+        git add exe/main.exe
         git commit -m "Add Windows EXE build"
         git push --set-upstream origin windows-build
 
