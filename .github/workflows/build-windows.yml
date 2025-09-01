@@ -40,16 +40,18 @@ jobs:
     # 6. Commit EXE to new branch using PAT
     - name: Commit EXE to new branch
       env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}   
+        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       run: |
         git checkout -b windows-build
         mkdir -p exe
         mv dist/main.exe exe/
         git add exe/main.exe
         git commit -m "Add Windows EXE build"
-        git push --set-upstream https://jonasvanleeuwen19:${PAT_TOKEN}@github.com/jonasvanleeuwen19/youtube-player.git windows-build
+        # force remote to use PAT
+        git remote set-url origin https://jonasvanleeuwen19:${PAT_TOKEN}@github.com/jonasvanleeuwen19/youtube-player.git
+        git push --set-upstream origin windows-build
 
-    # 7. Upload artifact 
+    # 7. Upload artifact
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
